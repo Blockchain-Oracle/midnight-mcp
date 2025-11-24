@@ -72,10 +72,10 @@ This will return the complete DID Document with verification methods.`,
       const didDocument = await resolveIdentusDID(input.did);
 
       // Extract verification methods, authentication, and key agreement
-      const verificationMethods = didDocument.verificationMethod || [];
+      const verificationMethods = didDocument.verificationMethods || [];
       const authentication = didDocument.authentication || [];
       const keyAgreement = didDocument.keyAgreement || [];
-      const services = didDocument.service || [];
+      const services = didDocument.services || [];
 
       return {
         success: true,

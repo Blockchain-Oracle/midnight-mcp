@@ -41,7 +41,7 @@ const TOOLS: Tool[] = [
 /**
  * Tool executor map
  */
-const TOOL_EXECUTORS = new Map([
+const TOOL_EXECUTORS = new Map<string, (args: unknown) => Promise<any>>([
   ['createDID', createDIDTool.execute],
   ['resolveDID', resolveDIDTool.execute],
 ]);
