@@ -6,18 +6,10 @@
  * - ED25519 key pair for authentication
  * - X25519 key pair for key agreement (DIDComm)
  * - Peer DID (did:peer:2.* format)
- *
- * In MOCK mode: Returns predefined mock DIDs for testing
- * In PRODUCTION mode: Uses real Identus SDK
  */
 
 import { z } from 'zod';
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
-import {
-  MOCK_MODE,
-  generateMockDID,
-  getMockDIDByAgentId,
-} from '../mock-data.js';
 import {
   createAuthKeyPair,
   createKeyAgreementKeyPair,
@@ -102,42 +94,6 @@ This will create a Peer DID with ED25519 (auth) and X25519 (key agreement) keys.
   execute: async (args: unknown) => {
     const input = CreateDIDInputSchema.parse(args);
 
-    // Check if DID already exists for this agent
-    if (MOCK_MODE) {
-      const existingDID = getMockDIDByAgentId(input.agentId);
-      if (existingDID) {
-        return {
-          success: true,
-          alreadyExists: true,
-          did: existingDID.did,
-          agentId: input.agentId,
-          publicKeys: existingDID.publicKeys,
-          created: existingDID.created,
-          metadata: {
-            name: existingDID.name,
-            keyTypes: existingDID.keyTypes,
-          },
-        };
-      }
-
-      // Generate new mock DID
-      const mockDID = generateMockDID(input.agentId, input.name);
-
-      return {
-        success: true,
-        alreadyExists: false,
-        did: mockDID.did,
-        agentId: input.agentId,
-        publicKeys: mockDID.publicKeys,
-        created: mockDID.created,
-        metadata: {
-          name: mockDID.name,
-          keyTypes: mockDID.keyTypes,
-        },
-      };
-    }
-
-    // PRODUCTION mode: Use real Identus SDK
     try {
       // Check if DID already exists for this agent
       const existingDID = await getDIDByAgentId(input.agentId);

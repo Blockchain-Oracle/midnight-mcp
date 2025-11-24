@@ -7,17 +7,10 @@
  * - Authentication methods
  * - Key agreement methods
  * - Service endpoints (if any)
- *
- * In MOCK mode: Returns predefined mock DID Documents
- * In PRODUCTION mode: Uses real Identus SDK
  */
 
 import { z } from 'zod';
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
-import {
-  MOCK_MODE,
-  resolveMockDID,
-} from '../mock-data.js';
 import { resolveDID as resolveIdentusDID } from '../identus-sdk/castor.js';
 import { getDIDByString } from '../storage/did-storage.js';
 
@@ -71,25 +64,6 @@ This will return the complete DID Document with verification methods.`,
   execute: async (args: unknown) => {
     const input = ResolveDIDInputSchema.parse(args);
 
-    if (MOCK_MODE) {
-      try {
-        const didDocument = resolveMockDID(input.did);
-
-        return {
-          success: true,
-          did: input.did,
-          didDocument: didDocument,
-          verificationMethods: didDocument.verificationMethod || [],
-          authentication: didDocument.authentication || [],
-          keyAgreement: didDocument.keyAgreement || [],
-          services: didDocument.service || [],
-        };
-      } catch (error) {
-        throw new Error(`Failed to resolve DID: ${error instanceof Error ? error.message : String(error)}`);
-      }
-    }
-
-    // PRODUCTION mode: Use real Identus SDK
     try {
       // First check if we have this DID in local storage
       const storedDID = await getDIDByString(input.did);

@@ -3,7 +3,7 @@
 /**
  * Test Script for Identus MCP Tools
  *
- * Tests createDID and resolveDID tools with mock data.
+ * Tests createDID and resolveDID tools with real Identus SDK.
  * Run with: pnpm test or tsx src/tools/test-tools.ts
  */
 

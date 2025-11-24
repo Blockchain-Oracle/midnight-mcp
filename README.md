@@ -28,7 +28,6 @@ Built on Hyperledger Identus SDK v7.0.0 modular architecture:
 - ✅ Resolve DIDs to W3C-compliant DID Documents
 - ✅ File-based storage for DID persistence
 - ✅ Real Hyperledger Identus SDK v7.0.0 integration
-- ✅ Mock mode for testing without persistence
 - ✅ MCP protocol integration for LLM agent access
 
 ## Installation
@@ -63,10 +62,7 @@ The server runs as a stdio-based MCP server that can be integrated with Claude D
   "mcpServers": {
     "identus": {
       "command": "node",
-      "args": ["/path/to/identus-mcp/dist/server.js"],
-      "env": {
-        "IDENTUS_MOCK_MODE": "true"
-      }
+      "args": ["/path/to/identus-mcp/dist/server.js"]
     }
   }
 }
@@ -136,15 +132,14 @@ Resolve a Peer DID to its DID Document.
 
 ## Real SDK Implementation ✅
 
-The server now uses the **real Hyperledger Identus SDK v7.0.0** for cryptographic DID operations!
+The server uses the **real Hyperledger Identus SDK v7.0.0** for cryptographic DID operations!
 
 ```bash
-# Production mode with real SDK (default)
-export IDENTUS_MOCK_MODE=false
+# Run with real SDK
 pnpm run dev
 ```
 
-Production mode provides:
+This provides:
 - ✅ Real cryptographic Peer DIDs using Ed25519 and X25519 keys
 - ✅ W3C DID Core 1.0 compliant DID Documents
 - ✅ File-based storage for DID persistence (JSON)
@@ -152,46 +147,10 @@ Production mode provides:
 
 **Storage:** DIDs and private keys are stored in `storage/dids.json` (gitignored for security)
 
-## Mock Mode
-
-For testing without persistence, mock mode is still available:
-
-```bash
-# Enable mock mode
-export IDENTUS_MOCK_MODE=true
-pnpm run dev
-```
-
-Mock mode provides:
-- 3 predefined agent DIDs (agent-1, agent-2, agent-3)
-- Dynamic DID generation for new agents
-- W3C-compliant DID Documents
-- No storage or persistence
-
-### Predefined Mock DIDs
-
-```typescript
-agent-1 (Alice): did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc
-agent-2 (Bob):   did:peer:2.Ez6LSghwSE437wnDE1pt3X6hVDUQzSjsHzinpX3XFvMjRAm7y
-agent-3 (Charlie): did:peer:2.Ez6LSoMdmJz8HJBcRDLSPYhzj4FpFmPJRkEpLfPEYRotKcezL
-```
-
-## Production Mode
-
-To use real Identus SDK (requires configuration):
-
-```bash
-export IDENTUS_MOCK_MODE=false
-export IDENTUS_API_URL=https://your-identus-instance.com
-pnpm start
-```
-
-**Note**: Production mode requires Identus SDK integration (coming soon).
-
 ## Testing
 
 ```bash
-# Run tool tests with mock data
+# Run tool tests with real SDK
 pnpm test
 
 # Expected output:
@@ -239,23 +198,29 @@ identus-mcp/
 ├── README.md              # This file
 ├── src/
 │   ├── server.ts          # MCP server entry point
-│   ├── mock-data.ts       # Mock DIDs and DID Documents
+│   ├── identus-sdk/       # Real SDK wrappers
+│   │   ├── apollo.ts      # Cryptography operations
+│   │   └── castor.ts      # DID operations
+│   ├── storage/           # Persistence layer
+│   │   └── did-storage.ts # File-based DID storage
 │   └── tools/
 │       ├── create-did.ts  # createDID tool implementation
 │       └── resolve-did.ts # resolveDID tool implementation
+├── storage/               # DID storage directory
+│   └── dids.json          # Persisted DIDs (gitignored)
 └── dist/                  # Compiled JavaScript (after build)
 ```
 
 ## Roadmap
 
-### Phase 1 (Current)
+### Phase 1 (Completed) ✅
 - [x] Basic MCP server infrastructure
-- [x] createDID tool with mock data
-- [x] resolveDID tool with mock data
-- [x] Mock mode for testing
+- [x] Real Identus SDK v7.0.0 integration
+- [x] createDID tool with real cryptographic operations
+- [x] resolveDID tool with real DID resolution
+- [x] File-based storage for DID persistence
 
-### Phase 2 (Week 3-4)
-- [ ] Real Identus SDK integration
+### Phase 2 (In Progress)
 - [ ] Credential issuance (Pollux)
 - [ ] Credential verification
 - [ ] DIDComm messaging (Mercury)

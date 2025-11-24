@@ -16,7 +16,7 @@
  * Usage:
  *   npm run dev          # Development mode with tsx
  *   npm start            # Production mode
- *   npm test             # Test tools with mock data
+ *   npm test             # Test tools
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -29,7 +29,6 @@ import {
 
 import { createDIDTool } from './tools/create-did.js';
 import { resolveDIDTool } from './tools/resolve-did.js';
-import { MOCK_MODE } from './mock-data.js';
 
 /**
  * All available Identus MCP tools
@@ -112,7 +111,7 @@ async function main() {
   await server.connect(transport);
 
   console.error(`Identus MCP Server running...`);
-  console.error(`Mode: ${MOCK_MODE ? 'MOCK' : 'PRODUCTION'}`);
+  console.error(`Mode: PRODUCTION (Real Identus SDK v7.0.0)`);
   console.error(`Tools: ${TOOLS.length}`);
   console.error(`  - ${TOOLS.map(t => t.name).join('\\n  - ')}`);
 }
