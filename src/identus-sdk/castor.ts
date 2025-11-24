@@ -44,10 +44,10 @@ export async function createPeerDID(
 ) {
   const castor = getCastor();
 
-  // SDK v7.0.0 expects private keys, not KeyPair objects
-  // Pass the privateKey property from each KeyPair
+  // SDK v7.0.0 expects public keys array for createPeerDID
+  // Extract public keys from the KeyPair objects
   const peerDID = await castor.createPeerDID(
-    [authKeyPair.privateKey, keyAgreementKeyPair.privateKey],
+    [authKeyPair.publicKey, keyAgreementKeyPair.publicKey],
     services
   );
 

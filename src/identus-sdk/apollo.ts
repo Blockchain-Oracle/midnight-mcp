@@ -78,30 +78,33 @@ export function exportKeyToString(key: any): string {
 
 /**
  * Get public key multibase encoding
+ * Note: This is a simplified version for demo purposes
+ * In production, use proper multibase/multicodec encoding
  */
 export function getPublicKeyMultibase(keyPair: any): string {
   const publicKey = keyPair.publicKey;
 
   // Try to get raw bytes
-  let keyBytes: Buffer;
-  if (publicKey.getEncoded) {
-    keyBytes = Buffer.from(publicKey.getEncoded());
-  } else if (publicKey.raw) {
-    keyBytes = Buffer.from(publicKey.raw);
+  let keyBytes: Uint8Array;
+  if (publicKey.raw) {
+    keyBytes = publicKey.raw;
+  } else if (publicKey.getEncoded && typeof publicKey.getEncoded === 'function') {
+    keyBytes = publicKey.getEncoded();
   } else if (publicKey.value) {
-    keyBytes = Buffer.from(publicKey.value);
+    keyBytes = publicKey.value;
   } else {
     throw new Error('Unable to extract public key bytes');
   }
 
-  // Convert to base58btc (simplified: using base64 for now)
-  const base58 = keyBytes.toString('base64');
+  // Convert to base64 for storage (simplified encoding)
+  // In production, use proper multibase encoding with base58btc
+  const base64 = Buffer.from(keyBytes).toString('base64');
 
   // Determine prefix based on key type
   const isEd25519 = keyPair instanceof Ed25519KeyPair || keyPair.constructor.name === 'Ed25519KeyPair';
-  const prefix = isEd25519 ? 'z6Mk' : 'z6LS';
+  const prefix = isEd25519 ? 'ed25519:' : 'x25519:';
 
-  return `${prefix}${base58.substring(0, 44)}`;
+  return `${prefix}${base64}`;
 }
 
 export { Domain, Ed25519KeyPair, X25519KeyPair };
