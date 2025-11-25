@@ -15,8 +15,18 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "types": ["node"]
+    "types": ["node", "jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@lib/*": ["src/lib/*"],
+      "@audit/*": ["src/audit/*"],
+      "@services/*": ["src/services/*"],
+      "@mcp/*": ["src/mcp/*"],
+      "@contracts/*": ["src/contracts/*"],
+      "@api/*": ["src/api/*"],
+      "@shared/*": ["src/types/*"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules", "dist"]
 }
